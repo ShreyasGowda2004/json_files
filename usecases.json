@@ -1,0 +1,75 @@
+[
+  {
+    "id": "UC001",
+    "title": "How to create a file in Java",
+    "description": "Create a new file using Java's File class and handle exceptions properly.",
+    "steps": [
+      "Import java.io.File and java.io.IOException",
+      "Create a File object with the desired file path",
+      "Call createNewFile() method",
+      "Check the returned boolean value to confirm creation"
+    ],
+    "code": "import java.io.File;\nimport java.io.IOException;\n\npublic class CreateFileExample {\n    public static void main(String[] args) {\n        try {\n            File file = new File(\"example.txt\");\n            if (file.createNewFile()) {\n                System.out.println(\"File created: \" + file.getName());\n            } else {\n                System.out.println(\"File already exists.\");\n            }\n        } catch (IOException e) {\n            System.out.println(\"An error occurred.\");\n            e.printStackTrace();\n        }\n    }\n}",
+    "category": "Java",
+    "tags": ["file", "java", "io", "filesystem"]
+  },
+  {
+    "id": "UC002",
+    "title": "How to connect to MongoDB in Spring Boot",
+    "description": "Use Spring Data MongoDB to connect your Spring Boot application to MongoDB.",
+    "steps": [
+      "Add Spring Data MongoDB dependency in pom.xml",
+      "Configure MongoDB connection in application.properties",
+      "Create a model class with @Document annotation",
+      "Create a repository interface extending MongoRepository",
+      "Inject and use the repository in your service or controller"
+    ],
+    "code": "# application.properties\nspring.data.mongodb.uri=mongodb://localhost:27017/mydb\nspring.data.mongodb.database=mydb\n\n# Example Entity\n@Document(collection = \"users\")\npublic class User {\n    @Id\n    private String id;\n    private String name;\n    private String email;\n    \n    // constructors, getters, setters\n}\n\n# Example Repository\npublic interface UserRepository extends MongoRepository<User, String> {\n    List<User> findByName(String name);\n}",
+    "category": "Spring Boot",
+    "tags": ["mongodb", "spring-boot", "database", "nosql"]
+  },
+  {
+    "id": "UC003",
+    "title": "How to send HTTP request in Python",
+    "description": "Use the requests library to send HTTP GET and POST requests in Python.",
+    "steps": [
+      "Install requests using pip install requests",
+      "Import requests in your Python file",
+      "Use requests.get() or requests.post() with URL",
+      "Handle the response object and parse JSON if needed"
+    ],
+    "code": "import requests\nimport json\n\n# GET request\nresponse = requests.get('https://api.example.com/data')\nif response.status_code == 200:\n    data = response.json()\n    print(data)\n\n# POST request\npayload = {'key': 'value', 'name': 'example'}\nheaders = {'Content-Type': 'application/json'}\nresponse = requests.post('https://api.example.com/submit', \n                        json=payload, \n                        headers=headers)\nprint(f\"Status: {response.status_code}\")\nprint(f\"Response: {response.text}\")",
+    "category": "Python",
+    "tags": ["http", "python", "api", "requests"]
+  },
+  {
+    "id": "UC004",
+    "title": "How to create a REST API with Node.js and Express",
+    "description": "Build a simple REST API using Node.js and Express framework.",
+    "steps": [
+      "Initialize a new Node.js project with npm init",
+      "Install Express using npm install express",
+      "Create server.js file and set up Express app",
+      "Define routes for different HTTP methods",
+      "Start the server and test endpoints"
+    ],
+    "code": "const express = require('express');\nconst app = express();\nconst PORT = 3000;\n\n// Middleware\napp.use(express.json());\n\n// Sample data\nlet users = [\n  { id: 1, name: 'John Doe', email: 'john@example.com' },\n  { id: 2, name: 'Jane Smith', email: 'jane@example.com' }\n];\n\n// GET all users\napp.get('/api/users', (req, res) => {\n  res.json(users);\n});\n\n// GET user by ID\napp.get('/api/users/:id', (req, res) => {\n  const user = users.find(u => u.id === parseInt(req.params.id));\n  if (!user) return res.status(404).json({ error: 'User not found' });\n  res.json(user);\n});\n\n// POST new user\napp.post('/api/users', (req, res) => {\n  const newUser = {\n    id: users.length + 1,\n    name: req.body.name,\n    email: req.body.email\n  };\n  users.push(newUser);\n  res.status(201).json(newUser);\n});\n\n// Start server\napp.listen(PORT, () => {\n  console.log(`Server running on http://localhost:${PORT}`);\n});",
+    "category": "Node.js",
+    "tags": ["nodejs", "express", "rest-api", "javascript"]
+  },
+  {
+    "id": "UC005",
+    "title": "How to implement JWT authentication in React",
+    "description": "Add JSON Web Token authentication to a React application.",
+    "steps": [
+      "Install required packages: axios, jwt-decode",
+      "Create authentication context and provider",
+      "Implement login and logout functions",
+      "Create protected routes component",
+      "Store JWT token in localStorage or cookies"
+    ],
+    "code": "import React, { createContext, useContext, useState, useEffect } from 'react';\nimport axios from 'axios';\nimport { jwtDecode } from 'jwt-decode';\n\n// Auth Context\nconst AuthContext = createContext();\n\nexport const useAuth = () => useContext(AuthContext);\n\nexport const AuthProvider = ({ children }) => {\n  const [user, setUser] = useState(null);\n  const [loading, setLoading] = useState(true);\n\n  useEffect(() => {\n    const token = localStorage.getItem('token');\n    if (token) {\n      try {\n        const decoded = jwtDecode(token);\n        if (decoded.exp * 1000 > Date.now()) {\n          setUser(decoded);\n          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;\n        } else {\n          localStorage.removeItem('token');\n        }\n      } catch (error) {\n        localStorage.removeItem('token');\n      }\n    }\n    setLoading(false);\n  }, []);\n\n  const login = async (email, password) => {\n    try {\n      const response = await axios.post('/api/auth/login', { email, password });\n      const { token } = response.data;\n      localStorage.setItem('token', token);\n      const decoded = jwtDecode(token);\n      setUser(decoded);\n      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;\n      return { success: true };\n    } catch (error) {\n      return { success: false, error: error.response?.data?.message };\n    }\n  };\n\n  const logout = () => {\n    localStorage.removeItem('token');\n    delete axios.defaults.headers.common['Authorization'];\n    setUser(null);\n  };\n\n  const value = {\n    user,\n    login,\n    logout,\n    loading\n  };\n\n  return (\n    <AuthContext.Provider value={value}>\n      {children}\n    </AuthContext.Provider>\n  );\n};",
+    "category": "React",
+    "tags": ["react", "jwt", "authentication", "security"]
+  }
+]
