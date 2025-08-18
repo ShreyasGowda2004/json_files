@@ -30,7 +30,7 @@
   },
   {
     "id": "UC003",
-    "title": "How to send HTTP request in Python",
+    "title": "How to send HTTP request in java",
     "description": "Use the library to send HTTP GET and POST requests in Python.",
     "steps": [
       "Install requests using pip install requests",
